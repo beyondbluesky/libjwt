@@ -1,0 +1,45 @@
+{
+    "name": "beyondbluesky/lib-jwt",
+    "type": "symfony-bundle",
+    "description": "libJWT provides tools to manage JWT tokens in an easy way.",
+    "keywords": [
+        "JWT",
+        "php",
+        "lib"
+    ],
+    "license": "CC-BY-NC-SA-4.0",
+    "authors": [
+        {
+            "name": "Josep Llauradó Selvas"
+        }
+    ],
+    "require": {
+        "php": ">=7.3",
+        "symfony/framework-bundle": "^3.4|^4.0|^5.0",
+        "symfony/dependency-injection": "^3.4|^4.0|^5.0",
+        "symfony/routing": "^3.4|^4.0|^5.0",
+        "symfony/http-foundation": "^3.4|^4.0|^5.0"
+    },
+    "require-dev": {
+        "php": ">=7.3",
+        "symfony/framework-bundle": "^3.4|^4.0|^5.0",
+        "symfony/dependency-injection": "^3.4|^4.0|^5.0",
+        "symfony/routing": "^3.4|^4.0|^5.0",
+        "symfony/http-foundation": "^3.4|^4.0|^5.0"
+    },
+    "suggest": {
+    },
+    "extra": {
+        "branch-alias": {
+            "master": "1.0",
+            "dev-master": "1.0-dev"
+        }
+    },
+    "autoload": {
+        "psr-4" : {
+            "BeyondBlueSky\\LibJWT\\" : "src/"
+        }
+    },
+    "bin": [
+    ]
+}

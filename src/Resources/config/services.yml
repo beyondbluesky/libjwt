@@ -1,0 +1,8 @@
+
+services:
+    BeyondBlueSky\LibJWT\DependencyInjection\JWTServiceExtension:
+        class: BeyondBlueSky\LibJWT\DependencyInjection\JWTServiceExtension
+        public: true
+        autowire: true
+        
+        
