@@ -5,6 +5,8 @@ namespace BeyondBlueSky\LibJWT\Entity;
 use BeyondBlueSky\LibJWT\Entity\JWTHeader;
 use BeyondBlueSky\LibJWT\Entity\JWTPayload;
 
+use BeyondBlueSky\LibJWT\Entity\Exception\NotJWTokenException;
+
 class JWToken {
 
     /**
@@ -40,6 +42,10 @@ class JWToken {
         $this->payload = new JWTPayload();
         
         $tokenArray = explode('.', $tokenString);
+        
+        if( sizeof($tokenArray) < 2 ){
+            throw new NotJWTokenException('Token is not a JWToken');
+        }
 
         $this->header->restore($tokenArray[0]);
         $this->payload->restore($tokenArray[1]);
