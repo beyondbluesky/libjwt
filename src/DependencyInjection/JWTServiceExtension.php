@@ -88,8 +88,8 @@ class JWTServiceExtension extends Extension {
             $access= 'update';
         }else if( $method == "POST"){
             $access= 'create';
-        }else if( $method == "DELETE"){
-            $access= 'delete';
+        }else {
+            $access= strtolower($method);
         }
 
         return $access;
