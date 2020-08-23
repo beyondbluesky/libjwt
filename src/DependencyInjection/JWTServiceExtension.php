@@ -23,6 +23,8 @@ use BeyondBlueSky\LibJWT\Entity\JWToken;
 use BeyondBlueSky\LibJWT\Entity\JWTHeader;
 use BeyondBlueSky\LibJWT\Entity\JWTPayload;
 
+use BeyondBlueSky\LibJWT\Entity\Exception\JWTokenSignatureException;
+
 class JWTServiceExtension extends Extension {
     
     public function load(array $configs, ContainerBuilder $container)
@@ -48,6 +50,35 @@ class JWTServiceExtension extends Extension {
         return $jwtoken;
     }
     
+    public function signedToken(string $token): bool{
+        $tokenArray = explode('.', $token);
+        if( sizeof($tokenArray) < 3 ){
+            return false;
+        }else {
+            return true;
+        }
+    }
+    
+    public function tokenVerified(string $token, string $publicKey ): bool{
+        
+        $tokenArray = explode('.', $token);
+        if( sizeof($tokenArray) < 3 ){
+            throw new JWTokenSignatureException('JWT without signature');
+        }
+        $data = $tokenArray[0].".".$tokenArray[1];
+        $signature = $this->urlSafeB64Decode($tokenArray[2]);
+        
+        $result = openssl_verify($data, $signature, $publicKey, OPENSSL_ALGO_SHA256 );
+        
+        $boolRes = ($result == 1)? true: false;
+        
+        if( $result == -1 ){
+            throw new JWTokenSignatureException('LibJWT internal error verifying signature.');
+        }
+        
+        return $boolRes;
+    }
+
     public function inClaims(JWToken $jwToken, string $target, string $method ){
         $isAllowed= false;
         
@@ -94,44 +125,6 @@ class JWTServiceExtension extends Extension {
 
         return $access;
     }
-    
-    /*
-    public function generateToken(string $iss, string $tokenType, ClientSession $session ){
-        
-        // 1. Check if the audience is authorized
-        
-        
-        // 2. Generates a JWT token
-        $t= new JWToken();
-        
-        $jwtH= new JWTHeader();
-        $jwtH->setAlg(JWTHeader::$ALG_NONE);
-        
-        $jwtP= new JWTPayload();
-        $jwtP->setAud($session->getAudience());
-        $jwtP->setClientId($session->getClient()->getAppId());
-        $jwtP->setIat(new \DateTime() );
-        $jwtP->setJti( $this->getRandomString(256) );
-        $jwtP->setIss( $iss );
-
-        $timeoutDate = new \DateTime();
-        $timeout = 60 * 60 ; // 1h token
-        $timeoutDate->add(new \DateInterval("PT".$timeout."S"));
-        $jwtP->setExp($timeoutDate); 
-        $jwtP->setSub( $session->getUser()->getLogin() );
-        
-        $t->setHeader($jwtH);
-        $t->setPayload($jwtP);
-        
-        $strToken= $this->getEncodedToken($t);
-        
-        $aToken= $this->generateTokenBasic($tokenType, $session);
-        $aToken->setCode($strToken);
-        $aToken->setEncoding(Token::$ENC_JWT);
-        
-        return $aToken;
-    }
-    */
     
     /**
      * Generation of a JWT Token
@@ -191,7 +184,6 @@ class JWTServiceExtension extends Extension {
         return $this->getTokenPlain($token).".".$signature;
     }
     
-
     private function generateDigest($content): string {
         // Redsys - Primero hacemos el base64 del contenido
         // Step 0 de la guia:
