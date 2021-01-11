@@ -85,6 +85,7 @@ class JWTServiceExtension extends Extension {
         $action = $this->getActionFromMethod( $method );
         $claims = $jwToken->getClaims();
         $claims = $this->getFullClaims($jwToken->getIss(), $claims);
+        $claims = $this->getPaths($claims);
         
         if( isset( $claims[$target] ) ){
             // The resource is found on claims
@@ -99,7 +100,101 @@ class JWTServiceExtension extends Extension {
         return $isAllowed;
     }
     
-    private function getFullClaims(string $host, array $claims ): array {
+    /**
+     * Private method that looks for the paths of the claims, supporting basic 
+     * and multi-level claims.
+     * 
+     * @param array $claims
+     * @return array
+     */
+    private function getPaths(array $claims){
+        $out=[];
+        
+        foreach($claims as $k=>$v){
+            if( $v != null ){
+                // Compounded claims
+                
+                $vArray = (array) $v;
+                foreach($vArray as $k2=> $v2){
+                    $v2Array = (array) $v2;
+                    if( $k2 == 'path'){
+                        
+                        $out = $v2Array; 
+                        
+                    }
+                }
+            }else {
+                // Simple 
+                $urlSafe= $this->urlSafeDecode(urldecode($host.$k));
+                $out[ $k ]= $v;
+            }
+        }
+        
+        return $out;
+    }
+    
+    /**
+     * It adds a full domain to each claim it receives. There are 2 types of claims: simple and compounded ones.
+     * The simple claims are like following:
+     * {
+     *  "dom":"Manager",
+     *  "\/api\/bankaccount\/":"create,list,delete,update,read",
+     *  "\/api\/bank\/":"create,list,delete,update,read,status",
+     *  "\/api\/bankaccounts\/":"create,list,delete,update,read",
+     *  "\/api\/psd2\/oauth\/connect":"read","\/api\/psd2\/oauth\/check":"read",
+     *  "\/api\/bank\/consent":"create,read,status",
+     *  "roles":"[\"DEV\/WRITER\"]"
+     * }
+     * 
+     * The compounded ones follow:
+     * {
+     *  "dom.1":"{
+     *      \"dom\":\"0000+0001\",
+     *      \"nam\":\"LOCAL\",
+     *      \"path\":{
+     *          \"\\\/api\\\/admin\\\/server\":\"create,delete,update,read\",
+     *          \"\\\/api\\\/security\\\/user\":\"create,delete,update,read\",
+     *          \"\\\/api\\\/security\\\/user\\\/me\":\"create,delete,update,read\"
+     *      },
+     *      \"roles\":\"[\\\"ROLE\/SUPERADMIN\\\"]\"
+     *  }"
+     * }
+     * 
+     * @param string $host
+     * @param array $claims
+     * @return array
+     */
+    public function getFullClaims(string $host, array $claims ): array {
+        $out= [];
+        
+        foreach($claims as $k=>$v){
+            $vObj= json_decode($v);
+            if( $vObj != null ){
+                // Compounded claims
+                $out[$k]= new \stdClass();
+                
+                $vArray = (array) $vObj;
+                foreach($vArray as $k2=> $v2){
+                    $v2Array = (array) $v2;
+                    if( $k2 == 'path'){
+                        
+                        $out[$k]->$k2 = $this->getFullClaimsSimple($host, $v2Array);
+                        
+                    }else {
+                        
+                        $out[$k]->$k2 = $v2;
+                    }
+                }
+            }else {
+                // Simple 
+                $urlSafe= $this->urlSafeDecode(urldecode($host.$k));
+                $out[ $urlSafe ]= $v;
+            }
+        }
+        return $out;
+    }
+    
+    private function getFullClaimsSimple(string $host, array $claims ): array {
         $out= [];
         
         foreach($claims as $k=>$v){

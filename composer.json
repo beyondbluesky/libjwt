@@ -15,24 +15,24 @@
     ],
     "require": {
         "php": ">=7.3",
-        "symfony/framework-bundle": "^3.4|^4.0|^5.0",
-        "symfony/dependency-injection": "^3.4|^4.0|^5.0",
-        "symfony/routing": "^3.4|^4.0|^5.0",
-        "symfony/http-foundation": "^3.4|^4.0|^5.0"
+        "symfony/framework-bundle": "^3.4|^4.0|^5.0|^5.2",
+        "symfony/dependency-injection": "^3.4|^4.0|^5.0|^5.2",
+        "symfony/routing": "^3.4|^4.0|^5.0|^5.2",
+        "symfony/http-foundation": "^3.4|^4.0|^5.0|^5.2"
     },
     "require-dev": {
         "php": ">=7.3",
-        "symfony/framework-bundle": "^3.4|^4.0|^5.0",
-        "symfony/dependency-injection": "^3.4|^4.0|^5.0",
-        "symfony/routing": "^3.4|^4.0|^5.0",
-        "symfony/http-foundation": "^3.4|^4.0|^5.0"
+        "symfony/framework-bundle": "^3.4|^4.0|^5.0|^5.2",
+        "symfony/dependency-injection": "^3.4|^4.0|^5.0|^5.2",
+        "symfony/routing": "^3.4|^4.0|^5.0|^5.2",
+        "symfony/http-foundation": "^3.4|^4.0|^5.0|^5.2"
     },
     "suggest": {
     },
     "extra": {
         "branch-alias": {
-            "master": "1.0-dev",
-            "dev-master": "1.0-dev"
+            "master": "1.1",
+            "dev-master": "1.1"
         }
     },
     "autoload": {
