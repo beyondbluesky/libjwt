@@ -113,14 +113,15 @@ class JWTServiceExtension extends Extension {
         foreach($claims as $k=>$v){
             if( $v != null ){
                 // Compounded claims
-                
                 $vArray = (array) $v;
+                $vArray = (array) $vArray[0];
                 foreach($vArray as $k2=> $v2){
                     $v2Array = (array) $v2;
-                    if( $k2 == 'path'){
-                        
-                        $out = $v2Array; 
-                        
+                    $v2Array = (array) json_decode($v2Array[0]);
+                    foreach($v2Array as $k3=>$v3){
+                        if( $k3 == 'path'){
+                            $out = (array)$v3; 
+                        }
                     }
                 }
             }else {
