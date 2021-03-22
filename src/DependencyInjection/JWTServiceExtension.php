@@ -79,13 +79,41 @@ class JWTServiceExtension extends Extension {
         return $boolRes;
     }
 
+    public function getClaims(JWToken $jwToken){
+        $claims = $jwToken->getClaims();
+        $claims = $this->getFullClaims($jwToken->getIss(), $claims);
+        
+        return $claims;
+    }
+    
+    public function getPaths(JWToken $jwToken){
+        $claims = $this->getClaims($jwToken);
+        $claims = $this->getPaths0($claims);
+        
+        return $claims;
+    }
+    
+    public function getActionFromMethod(string $method): string {
+        $access= '';
+        
+        if( $method == "GET"){
+            $access= 'read';
+        }else if( $method == "PUT"){
+            $access= 'update';
+        }else if( $method == "POST"){
+            $access= 'create';
+        }else {
+            $access= strtolower($method);
+        }
+
+        return $access;
+    }
+    
     public function inClaims(JWToken $jwToken, string $target, string $method ){
         $isAllowed= false;
         
         $action = $this->getActionFromMethod( $method );
-        $claims = $jwToken->getClaims();
-        $claims = $this->getFullClaims($jwToken->getIss(), $claims);
-        $claims = $this->getPaths($claims);
+        $claims = $this->getPaths($jwToken);
         
         if( isset( $claims[$target] ) ){
             // The resource is found on claims
@@ -107,7 +135,7 @@ class JWTServiceExtension extends Extension {
      * @param array $claims
      * @return array
      */
-    private function getPaths(array $claims){
+    private function getPaths0(array $claims){
         $out=[];
         
         foreach($claims as $k=>$v){
@@ -204,22 +232,6 @@ class JWTServiceExtension extends Extension {
         }
         
         return $out;
-    }
-    
-    private function getActionFromMethod(string $method): string {
-        $access= '';
-        
-        if( $method == "GET"){
-            $access= 'read';
-        }else if( $method == "PUT"){
-            $access= 'update';
-        }else if( $method == "POST"){
-            $access= 'create';
-        }else {
-            $access= strtolower($method);
-        }
-
-        return $access;
     }
     
     /**
