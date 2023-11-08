@@ -15,17 +15,17 @@
     ],
     "require": {
         "php": ">=7.3",
-        "symfony/framework-bundle": "^3.4|^4.0|^5.0|^5.2",
-        "symfony/dependency-injection": "^3.4|^4.0|^5.0|^5.2",
-        "symfony/routing": "^3.4|^4.0|^5.0|^5.2",
-        "symfony/http-foundation": "^3.4|^4.0|^5.0|^5.2"
+        "symfony/framework-bundle": "^3.4|^4.0|^5.0|^5.2|^6.3",
+        "symfony/dependency-injection": "^3.4|^4.0|^5.0|^5.2|^6.3",
+        "symfony/routing": "^3.4|^4.0|^5.0|^5.2|^6.3",
+        "symfony/http-foundation": "^3.4|^4.0|^5.0|^5.2|^6.3"
     },
     "require-dev": {
         "php": ">=7.3",
-        "symfony/framework-bundle": "^3.4|^4.0|^5.0|^5.2",
-        "symfony/dependency-injection": "^3.4|^4.0|^5.0|^5.2",
-        "symfony/routing": "^3.4|^4.0|^5.0|^5.2",
-        "symfony/http-foundation": "^3.4|^4.0|^5.0|^5.2"
+        "symfony/framework-bundle": "^3.4|^4.0|^5.0|^5.2|^6.3",
+        "symfony/dependency-injection": "^3.4|^4.0|^5.0|^5.2|^6.3",
+        "symfony/routing": "^3.4|^4.0|^5.0|^5.2|^6.3",
+        "symfony/http-foundation": "^3.4|^4.0|^5.0|^5.2|^6.3"
     },
     "suggest": {
     },
