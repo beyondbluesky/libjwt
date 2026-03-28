@@ -14,18 +14,18 @@
         }
     ],
     "require": {
-        "php": ">=7.3",
-        "symfony/framework-bundle": "^3.4|^4.0|^5.0|^5.2|^6.3",
-        "symfony/dependency-injection": "^3.4|^4.0|^5.0|^5.2|^6.3",
-        "symfony/routing": "^3.4|^4.0|^5.0|^5.2|^6.3",
-        "symfony/http-foundation": "^3.4|^4.0|^5.0|^5.2|^6.3"
+        "php": ">=8.4",
+        "symfony/framework-bundle": "^8.0",
+        "symfony/dependency-injection": "^8.0",
+        "symfony/routing": "^8.0",
+        "symfony/http-foundation": "^8.0"
     },
     "require-dev": {
-        "php": ">=7.3",
-        "symfony/framework-bundle": "^3.4|^4.0|^5.0|^5.2|^6.3",
-        "symfony/dependency-injection": "^3.4|^4.0|^5.0|^5.2|^6.3",
-        "symfony/routing": "^3.4|^4.0|^5.0|^5.2|^6.3",
-        "symfony/http-foundation": "^3.4|^4.0|^5.0|^5.2|^6.3"
+        "php": ">=8.4",
+        "symfony/framework-bundle": "^8.0",
+        "symfony/dependency-injection": "^8.0",
+        "symfony/routing": "^8.0",
+        "symfony/http-foundation": "^8.0"
     },
     "suggest": {
     },

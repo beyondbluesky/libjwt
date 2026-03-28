@@ -67,16 +67,80 @@ class JWTServiceExtension extends Extension {
         }
         $data = $tokenArray[0].".".$tokenArray[1];
         $signature = $this->urlSafeB64Decode($tokenArray[2]);
+
+        $publicKeyResource = $this->getPublicKeyResource($publicKey);
+        if( $publicKeyResource === false ){
+            throw new JWTokenSignatureException('Invalid public key format for JWT verification.'.$this->getOpenSSLErrors());
+        }
         
-        $result = openssl_verify($data, $signature, $publicKey, OPENSSL_ALGO_SHA256 );
+        $result = openssl_verify($data, $signature, $publicKeyResource, OPENSSL_ALGO_SHA256 );
         
         $boolRes = ($result == 1)? true: false;
         
         if( $result == -1 ){
-            throw new JWTokenSignatureException('LibJWT internal error verifying signature.');
+            throw new JWTokenSignatureException('LibJWT internal error verifying signature.'.$this->getOpenSSLErrors());
         }
         
         return $boolRes;
+    }
+
+    /**
+     * Accept PEM/certificate text or a filesystem path and return an OpenSSL key object.
+     */
+    private function getPublicKeyResource(string $publicKey)
+    {
+        $keyText = trim($publicKey);
+
+        if( is_file($publicKey) && is_readable($publicKey) ){
+            $fileContent = file_get_contents($publicKey);
+            if( $fileContent !== false ){
+                $keyText = trim($fileContent);
+            }
+        }
+
+        $keyResource = openssl_pkey_get_public($keyText);
+        if( $keyResource !== false ){
+            return $keyResource;
+        }
+
+        // Support keys delivered as base64-only body without PEM delimiters.
+        if( strpos($keyText, '-----BEGIN ') === false ){
+            $base64Body = preg_replace('/\s+/', '', $keyText);
+            $pemPublic = "-----BEGIN PUBLIC KEY-----\n"
+                . rtrim(chunk_split($base64Body, 64, "\n"))
+                . "\n-----END PUBLIC KEY-----";
+
+            $keyResource = openssl_pkey_get_public($pemPublic);
+            if( $keyResource !== false ){
+                return $keyResource;
+            }
+
+            $pemCert = "-----BEGIN CERTIFICATE-----\n"
+                . rtrim(chunk_split($base64Body, 64, "\n"))
+                . "\n-----END CERTIFICATE-----";
+
+            $keyResource = openssl_pkey_get_public($pemCert);
+            if( $keyResource !== false ){
+                return $keyResource;
+            }
+        }
+
+        return false;
+    }
+
+    private function getOpenSSLErrors(): string
+    {
+        $errors = [];
+
+        while( ($error = openssl_error_string()) !== false ){
+            $errors[] = $error;
+        }
+
+        if( count($errors) === 0 ){
+            return '';
+        }
+
+        return ' OpenSSL: '.implode(' | ', $errors);
     }
 
     public function getClaims(JWToken $jwToken){
