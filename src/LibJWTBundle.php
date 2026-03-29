@@ -12,7 +12,7 @@
 namespace BeyondBlueSky\LibJWT;
 
 use BeyondBlueSky\LibJWT\DependencyInjection\JWTServiceExtension;
-
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class LibJWTBundle extends Bundle
@@ -22,7 +22,7 @@ class LibJWTBundle extends Bundle
      *
      * @return KnpUOAuth2ClientExtension
      */
-    public function getContainerExtension()
+    public function getContainerExtension(): ?ExtensionInterface
     {
         if (null === $this->extension) {
             return new JWTServiceExtension();

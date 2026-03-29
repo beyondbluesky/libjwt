@@ -27,7 +27,7 @@ use BeyondBlueSky\LibJWT\Entity\Exception\JWTokenSignatureException;
 
 class JWTServiceExtension extends Extension {
     
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new YamlFileLoader(
             $container,
